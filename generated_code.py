@@ -1,4 +1,4 @@
-def find_median_sorted_arrays(nums1, nums2):
+        def find_median_sorted_arrays(nums1, nums2):
     """
     Finds the median of two sorted arrays.
 
@@ -16,37 +16,30 @@ def find_median_sorted_arrays(nums1, nums2):
     Space Complexity: O(1)
     """
     m, n = len(nums1), len(nums2)
-
     if m > n:  # Ensure nums1 is the shorter array for efficiency
-        nums1, nums2 = nums2, nums1
-        m, n = n, m
+        nums1, nums2, m, n = nums2, nums1, n, m
 
-    if m == 0:
-        if n == 0:
-            raise ValueError("Both input arrays cannot be empty.")
-        if n % 2 == 0:
-            return (nums2[n // 2 - 1] + nums2[n // 2]) / 2
-        else:
-            return nums2[n // 2]
+    if m == 0 and n == 0:
+        raise ValueError("Both input arrays cannot be empty.")
 
     low, high = 0, m
-
     while low <= high:
-        partitionX = (low + high) // 2
-        partitionY = (m + n + 1) // 2 - partitionX
+        partition_x = (low + high) // 2
+        partition_y = (m + n + 1) // 2 - partition_x
 
-        maxLeftX = -float('inf') if partitionX == 0 else nums1[partitionX - 1]
-        minRightX = float('inf') if partitionX == m else nums1[partitionX]
+        max_left_x = nums1[partition_x - 1] if partition_x > 0 else -float('inf')
+        min_right_x = nums1[partition_x] if partition_x < m else float('inf')
 
-        maxLeftY = -float('inf') if partitionY == 0 else nums2[partitionY - 1]
-        minRightY = float('inf') if partitionY == n else nums2[partitionY]
+        max_left_y = nums2[partition_y - 1] if partition_y > 0 else -float('inf')
+        min_right_y = nums2[partition_y] if partition_y < n else float('inf')
 
-        if maxLeftX <= minRightY and maxLeftY <= minRightX:
+
+        if max_left_x <= min_right_y and max_left_y <= min_right_x:
             if (m + n) % 2 == 0:
-                return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2
+                return (max(max_left_x, max_left_y) + min(min_right_x, min_right_y)) / 2
             else:
-                return max(maxLeftX, maxLeftY)
-        elif maxLeftX > minRightY:
-            high = partitionX - 1
+                return max(max_left_x, max_left_y)
+        elif max_left_x > min_right_y:
+            high = partition_x - 1
         else:
-            low = partitionX + 1
+            low = partition_x + 1
