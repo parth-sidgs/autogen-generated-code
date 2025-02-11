@@ -1,45 +1,54 @@
-        def find_median_sorted_arrays(nums1, nums2):
+        from typing import List, Optional
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+
+def merge_k_sorted_lists(lists: List[Optional[ListNode]]) -> Optional[ListNode]:
     """
-    Finds the median of two sorted arrays.
+    Merges k sorted linked lists into one sorted linked list.
 
     Args:
-        nums1: The first sorted array.
-        nums2: The second sorted array.
+        lists: A list of k sorted linked lists.
 
     Returns:
-        The median of the two sorted arrays.
-
-    Raises:
-        ValueError: If both input arrays are empty.
-
-    Time Complexity: O(log(min(m, n))) where m and n are the lengths of nums1 and nums2 respectively.
-    Space Complexity: O(1)
+        The head of the merged sorted linked list, or None if the input list is empty or all lists are None.
     """
-    m, n = len(nums1), len(nums2)
-    if m > n:  # Ensure nums1 is the shorter array for efficiency
-        nums1, nums2, m, n = nums2, nums1, n, m
 
-    if m == 0 and n == 0:
-        raise ValueError("Both input arrays cannot be empty.")
+    if not lists or all(lst is None for lst in lists):
+        return None
 
-    low, high = 0, m
-    while low <= high:
-        partition_x = (low + high) // 2
-        partition_y = (m + n + 1) // 2 - partition_x
+    import heapq
 
-        max_left_x = nums1[partition_x - 1] if partition_x > 0 else -float('inf')
-        min_right_x = nums1[partition_x] if partition_x < m else float('inf')
+    # Min-heap to store the current smallest nodes from each list.
+    min_heap = []
 
-        max_left_y = nums2[partition_y - 1] if partition_y > 0 else -float('inf')
-        min_right_y = nums2[partition_y] if partition_y < n else float('inf')
+    # Add the head of each non-null list to the heap.
+    for lst in lists:
+        if lst:
+            heapq.heappush(min_heap, (lst.val, id(lst), lst))  # Use id(lst) to avoid comparison issues with equal values
+
+    # Create a dummy head for the merged list.
+    dummy_head = ListNode()
+    current = dummy_head
+
+    # Iterate while the heap is not empty.
+    while min_heap:
+        # Get the node with the smallest value from the heap.
+        _, _, smallest_node = heapq.heappop(min_heap)
+
+        # Append the smallest node to the merged list.
+        current.next = smallest_node
+        current = current.next
+
+        # If the smallest node has a next node, add it to the heap.
+        if smallest_node.next:
+            heapq.heappush(min_heap, (smallest_node.next.val, id(smallest_node.next), smallest_node.next))
+
+    return dummy_head.next
 
 
-        if max_left_x <= min_right_y and max_left_y <= min_right_x:
-            if (m + n) % 2 == 0:
-                return (max(max_left_x, max_left_y) + min(min_right_x, min_right_y)) / 2
-            else:
-                return max(max_left_x, max_left_y)
-        elif max_left_x > min_right_y:
-            high = partition_x - 1
-        else:
-            low = partition_x + 1
+
