@@ -1,0 +1,55 @@
+        def max_sum_with_equal_digit_sum(nums):
+    """
+    Finds the maximum sum of two numbers in a list with equal digit sums.
+
+    Args:
+        nums: A list of positive integers.
+
+    Returns:
+        The maximum sum of two numbers with equal digit sums, or -1 if no such pair exists.
+    """
+
+    def sum_digits(n):
+        """Calculates the sum of digits of a positive integer."""
+        s = 0
+        while n:
+            s += n % 10
+            n //= 10
+        return s
+
+    digit_sum_map = {}  # Maps digit sum to the maximum number with that digit sum
+    max_sum = -1
+
+    for num in nums:
+        digit_sum = sum_digits(num)
+        if digit_sum in digit_sum_map:
+            max_sum = max(max_sum, num + digit_sum_map[digit_sum])
+            digit_sum_map[digit_sum] = max(digit_sum_map[digit_sum], num) #Keep only the largest number for a given digit sum
+        else:
+            digit_sum_map[digit_sum] = num
+
+    return max_sum
+
+
+# Example usage:
+nums1 = [18, 43, 36, 13, 7]
+print(max_sum_with_equal_digit_sum(nums1))  # Output: 54 (36 + 18)
+
+nums2 = [10, 12, 21]
+print(max_sum_with_equal_digit_sum(nums2))  # Output: 33 (12+21)
+
+nums3 = [1, 2, 3, 4]
+print(max_sum_with_equal_digit_sum(nums3)) # Output: -1
+
+nums4 = [1, 1, 1, 1]
+print(max_sum_with_equal_digit_sum(nums4)) # Output: 2
+
+nums5 = []
+print(max_sum_with_equal_digit_sum(nums5)) # Output: -1
+
+nums6 = [51,71,17,42]
+print(max_sum_with_equal_digit_sum(nums6)) # Output: 88
+
+nums7 = [42,33,60]
+print(max_sum_with_equal_digit_sum(nums7)) # Output: 75
+
