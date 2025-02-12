@@ -1,54 +1,37 @@
-        from typing import List, Optional
-
-# Definition for singly-linked list.
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-
-def merge_k_sorted_lists(lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        def longest_valid_parentheses(s: str) -> int:
     """
-    Merges k sorted linked lists into one sorted linked list.
+    Finds the length of the longest valid (well-formed) parentheses substring.
 
     Args:
-        lists: A list of k sorted linked lists.
+        s: The input string containing only '(' and ')'.
 
     Returns:
-        The head of the merged sorted linked list, or None if the input list is empty or all lists are None.
+        The length of the longest valid parentheses substring.
     """
 
-    if not lists or all(lst is None for lst in lists):
-        return None
+    n = len(s)
+    if n == 0:
+        return 0
 
-    import heapq
+    # dp[i] stores the length of the longest valid substring ending at index i
+    dp = [0] * n
 
-    # Min-heap to store the current smallest nodes from each list.
-    min_heap = []
+    max_len = 0
 
-    # Add the head of each non-null list to the heap.
-    for lst in lists:
-        if lst:
-            heapq.heappush(min_heap, (lst.val, id(lst), lst))  # Use id(lst) to avoid comparison issues with equal values
+    for i in range(1, n):
+        if s[i] == ')':
+            if s[i - 1] == '(':
+                # Case: ()
+                dp[i] = dp[i - 2] + 2 if i >= 2 else 2
+            elif i - dp[i - 1] > 0 and s[i - dp[i - 1] - 1] == '(':
+                # Case: (()) 
+                if i - dp[i - 1] - 2 >= 0:
+                    dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2
+                else:
+                    dp[i] = dp[i - 1] + 2
 
-    # Create a dummy head for the merged list.
-    dummy_head = ListNode()
-    current = dummy_head
+            max_len = max(max_len, dp[i])
 
-    # Iterate while the heap is not empty.
-    while min_heap:
-        # Get the node with the smallest value from the heap.
-        _, _, smallest_node = heapq.heappop(min_heap)
-
-        # Append the smallest node to the merged list.
-        current.next = smallest_node
-        current = current.next
-
-        # If the smallest node has a next node, add it to the heap.
-        if smallest_node.next:
-            heapq.heappush(min_heap, (smallest_node.next.val, id(smallest_node.next), smallest_node.next))
-
-    return dummy_head.next
-
+    return max_len
 
 
