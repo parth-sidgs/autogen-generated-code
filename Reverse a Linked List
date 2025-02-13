@@ -1,0 +1,48 @@
+        from typing import Optional
+
+class Node:
+    """
+    Represents a node in a singly linked list.
+    """
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+def reverse_linked_list(head: Optional[Node]) -> Optional[Node]:
+    """
+    Reverses a singly linked list.
+
+    Args:
+        head: The head of the linked list.
+
+    Returns:
+        The head of the reversed linked list.
+    """
+
+    prev = None
+    curr = head
+
+    while curr:
+        next_node = curr.next  # Store the next node
+        curr.next = prev        # Reverse the current node's pointer
+        prev = curr            # Move 'prev' one step forward
+        curr = next_node      # Move 'curr' one step forward
+
+    return prev
+
+
+# Example usage:
+head = Node(1)
+head.next = Node(2)
+head.next.next = Node(3)
+head.next.next.next = Node(4)
+
+reversed_head = reverse_linked_list(head)
+
+# Print the reversed linked list
+while reversed_head:
+    print(reversed_head.data, end=" ")
+    reversed_head = reversed_head.next
+
+# Expected Output: 4 3 2 1 
