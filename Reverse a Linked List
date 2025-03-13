@@ -1,0 +1,56 @@
+        from collections import deque
+
+def breadth_first_search(graph, start_node):
+    """
+    Performs a Breadth-First Search (BFS) on a graph.
+
+    Args:
+        graph: A dictionary representing the graph where keys are nodes 
+               and values are lists of their neighbors.
+        start_node: The node to start the search from.
+
+    Returns:
+        A list of nodes in the order they were visited during the BFS.
+        Returns None if the start_node is not in the graph.
+    """
+
+    if start_node not in graph:
+        return None  # Handle cases where start node isn't in the graph
+
+    visited = set()  # Keep track of visited nodes efficiently
+    queue = deque([start_node])  # Use a deque for efficient queue operations
+    visited_order = []
+
+    while queue:
+        current_node = queue.popleft()
+
+        if current_node not in visited:
+            visited.add(current_node)
+            visited_order.append(current_node)
+
+            # Explore neighbors and add them to the queue
+            for neighbor in graph[current_node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+
+    return visited_order
+
+
+# Example usage:
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+visited_nodes = breadth_first_search(graph, 'A')
+print(f"BFS traversal: {visited_nodes}")  # Output: BFS traversal: ['A', 'B', 'C', 'D', 'E', 'F']
+
+
+visited_nodes = breadth_first_search(graph, 'Z') # Example with a non-existent start node
+print(f"BFS traversal: {visited_nodes}") # Output: BFS traversal: None
+
+
